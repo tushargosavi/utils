@@ -287,6 +287,7 @@
 	(else (filter predicate (cdr sequence)))))
 
 
+; accumulate is like foldl in haskell.
 (define (accumulate op initial seq)
   (if (null? seq)
       initial
@@ -442,8 +443,8 @@
 ;; Exercise 2.41
 (define (uniq-triple n)
   (flatmap (lambda (i)
-	     (map (lambda (j)
-		    (map (lambda (k) (list i j k))
-			 (enumarate-interval 1 (- j 1))))
-		    (enumarate-interval 1 (- i 1))))
-	     (enumarate-interval 1 n)))
+	     (flatmap (lambda (j)
+			(map (lambda (k) (list i j k))
+			     (enumarate-interval 1 (- j 1))))
+		      (enumarate-interval 1 (- i 1))))
+	   (enumarate-interval 1 n)))
