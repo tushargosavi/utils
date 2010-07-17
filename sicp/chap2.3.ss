@@ -1,0 +1,90 @@
+(define (memq item x)
+  (cond ((null? x) false)
+	((eq? item (car x)) x)
+	(else (memq item (cdr x)))))
+
+(define (equal? a b)
+  (cond ((and (null? a) (null? b)) #t)
+	((and (symbol? a) (symbol? b) (eq? a b)) #t)
+	((and (pair? a) (pair? b)
+	      (eq? (car a) (car? b)))
+	 (equal? (cdr a) (cdr b)))
+	(else #f)))
+
+
+; Symbolic differentiation
+(define (variable? x) (symbol? x))
+(define (same-variable? x y)
+  (and (symbol? x) (symbol? y) (eq? x y)))
+(define (=number? a b)
+  (and (number? a) (= a b)))
+
+(define (addend x) (cadr x))
+(define (agumend x)
+  (if (null? (cdddr x))
+      (caddr x)
+      (cons '+ (cddr x))))
+(define (sum? x)
+  (and (pair? x) (eq? (car x) '+)))
+(define (make-sum a b)
+  (cond ((=number? a 0) b)
+	((=number? b 0) a)
+	((and (number? a) (number? b)) (+ a b))
+	(else (list '+ a b))))
+
+(define (product? exp)
+  (and (pair? exp) (eq? (car exp) '*)))
+(define (multiplier exp) (cadr exp))
+(define (multiplicand exp)
+  (if (null? (cdddr exp))
+      (caddr exp)
+      (cons '* (cddr exp))))
+(define (make-product a b)
+  (cond ((or (=number? a 0) (=number? b 0)) 0)
+	((=number? a 1) b)
+	((=number? b 1) a)
+	(else (list '* a b))))
+
+(define (power? exp)
+  (and (pair? exp) (eq? (car exp) '**)))
+(define (base exp) (cadr exp))
+(define (exponent exp) (caddr exp))
+(define (make-power a b)
+  (cond ((=number? b 0) 1)
+	((=number? b 1) a)
+	(else (list '** a b))))
+
+(define (deriv exp var)
+  (cond ((number? exp) 0)
+	((variable? exp)
+	 (if (same-variable? exp var) 1 0))
+	((sum? exp)
+	 (make-sum (deriv (addend exp) var)
+		   (deriv (agumend exp) var)))
+	((product? exp)
+	 (make-sum
+	  (make-product (multiplier exp)
+			(deriv (multiplicand exp) var))
+	  (make-product (deriv (multiplier exp) var)
+			(multiplicand exp))))
+	((power? exp)
+	 (make-product
+	  (exponent exp)
+	  (make-product (make-power (base exp)
+				    (make-sum -1 (exponent exp)))
+			(deriv (base exp) var))))
+	(else
+	 (error "unknown expression type -- DERIV" exp))))
+
+;; Set operations
+
+(define (element-of-set? x set)
+  (cond ((null? set) #f)
+	((equal? x (car set)) #t)
+	(else (element-of-set? x (cdr set)))))
+
+(define (adjoin-set x set)
+  (if (element-of-set? x set)
+      set
+      (cons x set)))
+
