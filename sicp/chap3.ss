@@ -35,7 +35,7 @@
 	 (count-pairs (cdr x))
 	 1)))
 
-(define (lookup lst elm)
+(define (lookup-list lst elm)
   (cond ((null? lst) #f)
 	((eq? elm (car lst)) #t)
 	(else (lookup (cdr lst) elm))))
@@ -45,7 +45,7 @@
   (let ((lst '()))
     (define (count x)
       (cond ((not (pair? x)) 0)
-	    ((lookup lst x) 0)
+	    ((lookup-list lst x) 0)
 	    (else (begin
 		    (cons lst x)
 		    (+ (count (car x))
@@ -89,7 +89,6 @@
 	 (set-front-ptr! queue (cdr (front-ptr queue)))
 	 queue)))
 
-	 
 (define (print-queue queue)
   (let ((start-ptr (front-ptr queue)))
     (define (print-element x)
@@ -152,3 +151,88 @@
 
     dispatch))
 
+
+(define (lookup-tbl key table)
+  (let ((record (assoc key (cdr table))))
+    (if record
+	(cdr record)
+	false)))
+(define (assoc key records)
+  (cond ((null? records) false)
+	((equal? key (caar records)) (car records))
+	(else (assoc key (cdr records)))))
+
+(define (insert-tbl! key value table)
+  (let ((record (assoc key (cdr table))))
+    (if record
+	(set-cdr! record value)
+	(set-cdr! table
+		  (cons (cons key value) (cdr table)))))
+  'ok)
+
+(define (make-table)
+  (list '*table*))
+
+
+(define (lookup2 key1 key2 table)
+  (let ((subtable (assoc key1 (cdr table))))
+    (if subtable
+	(let ((record key2 (cdr subtable)))
+	  (if record
+	      (cdr record)
+	      false))
+	false)))
+
+(define (insert2! key1 key2 value table)
+  (let ((subtable (assoc key1 (cdr table))))
+    (if subtable
+	(let ((record (assoc key2 (cdr subtable))))
+	  (if record
+	      (set-cdr! record value)
+	      (set-cdr subtable
+		       (cons (cons key2 value)
+			     (cdr subtable)))))
+	(set-cdr table
+		 (cons (list
+			key1
+			(cons key2 value))
+		       (cdr table)))))
+  'ok)
+
+
+(define (make-table2d)
+  (let ((local-tbl (list '*table*)))
+    (define (lookup key1 key2)
+      (let ((subtable (assoc key1 (cdr local-tbl))))
+	(if subtable
+	    (let ((record (assoc key2 (cdr subtable))))
+	      (if record
+		  (cdr record)
+		  false))
+	    false)))
+
+    (define (insert! key1 key2 value)
+      (let ((subtable (assoc key1 (cdr local-tbl))))
+	(if subtable
+	    (let ((record (assoc key2 (cdr subtable))))
+	      (if record
+		  (set-cdr! record value)
+		  (set-cdr! subtable
+			    (cons (cons key2 value)
+				  (cdr subtable)))))
+	    (set-cdr! local-tbl
+		      (cons (list key1
+				  (cons key2 value))
+			    (cdr local-tbl)))))
+      'ok)
+
+    (define (dispatch m)
+      (cond ((eq? m 'lookup-proc) lookup)
+	    ((eq? m 'insert-proc) insert!)
+	    (else (error "Unknown operation -TABLE " m))))
+    dispatch))
+
+		  
+(define operation-table (make-table2d))
+(define get (operation-table 'lookup-proc))
+(define put (operation-table 'insert-proc))
