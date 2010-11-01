@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "object.h"
 
+Object *call_function(node_t *, node_t *);
 void log(const char *fmt, ...);
 
 struct symbol_table {
@@ -18,10 +19,12 @@ struct symbol_table *symbol_head = NULL;
 struct symbol_table *add_symbol(char *name, Object *value);
 struct symbol_table *search_symbol(char *name);
 
+
 Object *ex(node_t *p)
 {
 	Object *value, *idx;
 	struct symbol_table *sym;
+	Object *func_node, *arg_node;
 
 	print_node(p);	
 	if (!p) return;
@@ -39,13 +42,15 @@ Object *ex(node_t *p)
 			sym = search_symbol(p->id.name);
 			if (sym) return sym->value;
 			else return create_int_obj(0);
-		case typeOpr :
+		case typeFuncCall :
+			func_node = get_function(p->func.name);
+			arg_node = ex(p->func.arg);
+			return call_function(func_node, arg_node);
+		case typeOpr:
 			switch (p->opr.oper) {
 				case ',' :
-					log("opr=\",\" op1=%p, op2=%p\n", p->opr.op[0],
-											p->opr.op[1]);
 					value = append_array_obj(ex(p->opr.op[0]),
-										   ex(p->opr.op[1]));
+									 ex(p->opr.op[1]));
 					return value;
 				case '[' : 
 					sym = search_symbol(p->opr.op[0]->id.name);
@@ -148,5 +153,11 @@ struct symbol_table *search_symbol(char *name)
 		ptr = ptr->next;
 	}
 	return NULL;
+}
+
+Object *call_function(node_t *code, node_t *arg)
+{
+	add_symbol("arg", arg);
+	return ex(code);
 }
 

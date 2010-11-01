@@ -19,7 +19,7 @@ void define_function(char *name, node_t *node);
 %token <str> STRING
 %token <str> IDENTIFIER
 %token WHILE IF PRINT FUNCTION
-%type  <nodep> expr stmt stmt_list arr_access array_def function
+%type  <nodep> expr stmt stmt_list arr_access array_def function function_call args
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -72,12 +72,22 @@ arr_access:
 	| arr_access '[' expr ']' { $$ = opr(']', 2, $1, $3); }
 	;
 
+function_call:
+	IDENTIFIER '(' args ')'	   { $$ = function_callnode($1, $3); }
+	;
+
+args:
+	expr			{ $$ = arrnode($1); }
+	| args ',' expr	{ $$ = opr(',', 2, $1, $3); }
+	;
+
 expr:
 	INTEGER			{ $$ = con($1) }
 	| IDENTIFIER	{ $$ = id($1); }
 	| STRING	{ $$ = strcon($1); }
 	| CHAR		{ $$ = charcon($1); }
 	| arr_access { $$ }
+	| function_call { $$ }
 	| '-' expr %prec UMINUS { $$ = opr(UMINUS, 1, $2); }
 	| expr '+' expr	{ $$ = opr('+', 2, $1, $3); }
 	| expr '-' expr { $$ = opr('-', 2, $1, $3); }

@@ -51,6 +51,17 @@ node_t *arrnode(node_t *node)
 	return p;
 }
 
+node_t *function_callnode(char *name, node_t *arg)
+{
+	node_t *p;
+	if ((p = (node_t*)malloc(sizeof(node_t))) == NULL)
+		yyerror("out of memory");
+	p->type = typeFuncCall;
+	p->func.name = strdup(name);
+	p->func.arg = arg;
+	return p;
+}
+
 node_t *id(char *name)
 {
 	node_t *p;

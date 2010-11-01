@@ -7,7 +7,8 @@ enum nodeEnum {
 	typeStrConst,
 	typeArray,
 	typeID,
-	typeOpr
+	typeOpr,
+	typeFuncCall
 };
 
 struct constNode {
@@ -16,6 +17,11 @@ struct constNode {
 		unsigned long value;
 		char *str;
 	};
+};
+
+struct funcNode {
+	char *name;
+	struct node *arg;
 };
 
 struct idNode {
@@ -37,8 +43,9 @@ typedef struct node {
 	union {
 		struct constNode	con;
 		struct idNode		id;
-		struct oprNode		opr;
 		struct arrNode		arr;
+		struct funcNode		func;
+		struct oprNode		opr;
 	};
 } node_t;
 
