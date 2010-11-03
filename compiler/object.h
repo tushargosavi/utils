@@ -11,6 +11,12 @@ enum ObjectType {
 	T_FUNCTION,
 };
 
+struct BArrayObject {
+	char *data;
+	int max_len;
+	int len;
+};
+
 struct ArrayObject {
 	struct Object_t **data;
 	int max_len;
@@ -23,6 +29,7 @@ struct Object_t {
 		unsigned long intval;
 		char *str;
 		unsigned char *ptr;
+		struct BArrayObject barr;
 		struct ArrayObject arr;
 	} value;
 };

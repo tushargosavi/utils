@@ -45,6 +45,7 @@ LETTER	[a-zA-Z]
 [;+-/*=\[\]<>{}()&^%$@!] {
 		return *yytext;
 	}
+"\.\."	{ return TWODOTS; }
 ">="	{ return GE; }
 "<="	{ return LE; }
 "=="	{ return EQ; }

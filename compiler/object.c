@@ -64,6 +64,17 @@ Object* create_char_obj(char c)
 	return o;
 }
 
+Object* create_barray_obj(char *c, int size)
+{
+	Object *o = new_object(T_BYTE_ARRAY);
+	char *data = (char*)malloc(size);
+	memcpy(data, c, size);
+	o->value.barr.data = data;
+	o->value.barr.len = size;
+	o->value.barr.max_len = size;
+	return o;
+}
+
 Object *create_arr_obj(Object *obj)
 {
 	Object *o = new_object(T_ARRAY);
@@ -274,6 +285,62 @@ Object *array_access(Object *o, Object *idx)
 				return NULL;
 			}
 			return o->value.arr.data[n];
+		default :
+			fprintf(stderr, "Array access can be possible only with "
+				" string, bytearray and array type of objects");
+			return NULL;
+	}
+	return NULL;	
+}
+
+/* The array access functions */
+Object *array_range(Object *o, Object *idx1, Object *idx2)
+{
+	int n, i, value;
+	int start, end;
+	char *data;
+	char *ptr;
+	Object *obj;
+
+
+	if (o == NULL || idx1 == NULL || idx2 == NULL)
+		return NULL;
+
+	switch(get_type(o)) {
+		case T_STRING :
+		case T_BYTE_ARRAY :
+			if (get_type(idx1) != T_INT || get_type(idx2) != T_INT) {
+				fprintf(stderr, "Invalid index specifiler");
+				return NULL;
+			}
+			ptr = get_string(o);
+			start = get_int(idx1);
+			end = get_int(idx2);
+			data = (char*)malloc(end - start +1);
+			for (i=0, n = start; n <= end; n++, i++)
+				data[i] = *(ptr+n);
+			if (get_type(o) == T_STRING)
+				return create_str_obj(data);
+			else
+				return create_barray_obj(data, end-start+1);
+			break;
+		case T_ARRAY :
+			if (get_type(idx1) != T_INT || get_type(idx2) != T_INT) {
+				fprintf(stderr, "Invalid index specifiler");
+				return NULL;
+			}
+			start = get_int(idx1);
+			end = get_int(idx2);
+			if ( end >= o->value.arr.next_idx || start > end) {
+				fprintf(stderr, "index out of bound %d\n", n);
+				return NULL;
+			}
+			data = (Object*) malloc(sizeof(Object*) * (end - start + 1));
+			obj = create_arr_obj(o->value.arr.data[start]);
+			for (n = start +1; n <= end; n++)
+				append_array_obj(obj, o->value.arr.data[n]);
+			return obj;
+			
 		default :
 			fprintf(stderr, "Array access can be possible only with "
 				" string, bytearray and array type of objects");
