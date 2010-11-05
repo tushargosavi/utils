@@ -22,7 +22,7 @@ struct symbol_table *search_symbol(char *name);
 
 Object *ex(node_t *p)
 {
-	Object *value, *idx;
+	Object *value, *idx, *idx2;
 	struct symbol_table *sym;
 	Object *func_node, *arg_node;
 
@@ -55,13 +55,22 @@ Object *ex(node_t *p)
 				case '[' : 
 					sym = search_symbol(p->opr.op[0]->id.name);
 					idx = ex(p->opr.op[1]);
-					if (sym && idx)
+					if (sym && idx && p->opr.nops == 2)
 						return array_access(sym->value, idx);
+					else if (p->opr.nops = 3) {
+						idx2 = ex(p->opr.op[2]);
+						if (idx2) 
+							return array_range(sym->value, idx, idx2);
+					}
 					return NULL;
 				case ']' :
 					idx = ex(p->opr.op[1]);
-					if (idx != NULL)
+					if (idx != NULL && p->opr.nops == 2)
 						return array_access(ex(p->opr.op[0]), idx);
+					if (p->opr.nops == 3) {
+						idx2 = ex(p->opr.op[2]);
+						return array_range(ex(p->opr.op[0]), idx, idx2);	
+					}
 					return NULL;
 				case WHILE :
 					while (get_int(ex(p->opr.op[0]))) 
@@ -157,7 +166,9 @@ struct symbol_table *search_symbol(char *name)
 
 Object *call_function(node_t *code, node_t *arg)
 {
+	Object *value;
 	add_symbol("arg", arg);
-	return ex(code);
+	value  = ex(code);
+	return value;
 }
 

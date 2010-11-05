@@ -18,7 +18,7 @@ void define_function(char *name, node_t *node);
 %token <intval> INTEGER CHAR
 %token <str> STRING
 %token <str> IDENTIFIER
-%token WHILE IF PRINT FUNCTION
+%token WHILE IF PRINT FUNCTION TWODOTS
 %type  <nodep> expr stmt stmt_list arr_access array_def function function_call args
 %nonassoc IFX
 %nonassoc ELSE
@@ -69,6 +69,8 @@ array_def:
 
 arr_access:
 	| IDENTIFIER '[' expr ']' { $$ = opr('[', 2, id($1), $3); }
+	| IDENTIFIER '[' expr TWODOTS expr ']' { $$ = opr('[', 3, id($1), $3, $5); }
+	| arr_access '[' expr TWODOTS expr ']' { $$ = opr(']', 3, $1, $3, $5); }
 	| arr_access '[' expr ']' { $$ = opr(']', 2, $1, $3); }
 	;
 
