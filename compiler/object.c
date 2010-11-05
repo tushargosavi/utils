@@ -293,6 +293,20 @@ Object *array_access(Object *o, Object *idx)
 	return NULL;	
 }
 
+int length(Object *o) {
+	switch (get_type(o)) {
+		case T_STRING :
+			return strlen(get_string(o));
+		case T_BYTE_ARRAY :
+			return o->value.barr.len;
+		case T_ARRAY :
+			return o->value.arr.next_idx;
+		default :
+			return 0;
+	}
+}
+
+	
 /* The array access functions */
 Object *array_range(Object *o, Object *idx1, Object *idx2)
 {

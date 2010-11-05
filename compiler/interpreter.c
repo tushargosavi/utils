@@ -22,11 +22,13 @@ struct symbol_table *search_symbol(char *name);
 
 Object *ex(node_t *p)
 {
-	Object *value, *idx, *idx2;
+	Object *value, *idx, *idx2, *arr;
 	struct symbol_table *sym;
 	Object *func_node, *arg_node;
+	int i, n;
+	char *name;
 
-	print_node(p);	
+	print_node(p);
 	if (!p) return;
 	/* log("Executing node type=%d\n", p->type); */
 	switch (p->type) {
@@ -75,6 +77,24 @@ Object *ex(node_t *p)
 				case WHILE :
 					while (get_int(ex(p->opr.op[0]))) 
 						value = ex(p->opr.op[1]);
+					return value;
+				case FOR :
+					ex(p->opr.op[0]);
+					while (get_int(ex(p->opr.op[1]))) {
+						value = ex(p->opr.op[3]);
+						ex(p->opr.op[2]);
+					}
+					return value;
+				case FOREACH :
+					arr = ex(p->opr.op[1]);
+					name = p->opr.op[0]->id.name;
+					n = length(arr);
+					for (i=0; i < n; i++) {
+						add_symbol(name,
+								array_access(arr,
+										create_int_obj(i)));
+						value = ex(p->opr.op[2]);
+					}
 					return value;
 				case IF :
 					if (get_int(ex(p->opr.op[0])))
@@ -130,6 +150,10 @@ Object *ex(node_t *p)
 						   ex(p->opr.op[1]));
 				case EQ :
 					return apply_operator("==",
+						   ex(p->opr.op[0]),
+						   ex(p->opr.op[1]));
+				case NE :
+					return apply_operator("!=",
 						   ex(p->opr.op[0]),
 						   ex(p->opr.op[1]));
 			}
