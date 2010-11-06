@@ -42,5 +42,5 @@ objtest : object.o base_opr.o objtest.o
 
 clean :
 	rm -f *.o
-	rm -f test.exe in.exe
+	rm -f test.exe in.exe graph
 	rm -f parser.c parser.h lexer.c lex.yy.c

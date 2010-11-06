@@ -17,7 +17,10 @@ keyword_ent_t keyword_tbl[] = {
 	{ "function", FUNCTION },
 	{ "in" , IN },
 	{ "foreach", FOREACH },
-	{ "for", FOR }
+	{ "for", FOR },
+	{ "break", BREAK },
+	{ "return", RETURN },
+	{ "continue", CONTINUE }
 	
 };
 

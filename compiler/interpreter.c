@@ -19,6 +19,7 @@ struct symbol_table *symbol_head = NULL;
 struct symbol_table *add_symbol(char *name, Object *value);
 struct symbol_table *search_symbol(char *name);
 
+Object *ret_value;
 
 Object *ex(node_t *p)
 {
@@ -75,13 +76,26 @@ Object *ex(node_t *p)
 					}
 					return NULL;
 				case WHILE :
-					while (get_int(ex(p->opr.op[0]))) 
+					while (get_int(ex(p->opr.op[0]))) {
 						value = ex(p->opr.op[1]);
+						if (value == BREAK) {
+							value = NULL;
+							break;
+						} else if (value == RETURN) {
+							return ret_value;
+						}
+					}
 					return value;
 				case FOR :
 					ex(p->opr.op[0]);
 					while (get_int(ex(p->opr.op[1]))) {
 						value = ex(p->opr.op[3]);
+						if (value == BREAK) {
+							value = NULL;
+							break;
+						} else if (value == RETURN) {
+							return ret_value;
+						}
 						ex(p->opr.op[2]);
 					}
 					return value;
@@ -94,8 +108,26 @@ Object *ex(node_t *p)
 								array_access(arr,
 										create_int_obj(i)));
 						value = ex(p->opr.op[2]);
+						if (value == BREAK) {
+							value = NULL;
+							break;
+						} else if (value == RETURN) {
+							return ret_value;
+						}
 					}
 					return value;
+				case BREAK:
+					printf("executing break request\n");
+					return BREAK;
+				case CONTINUE :
+					return CONTINUE;
+				case RETURN :
+					if (p->opr.nops == 1) {
+						ret_value = ex(p->opr.op[0]);
+					} else {
+						ret_value = NULL;
+					}
+					return RETURN;
 				case IF :
 					if (get_int(ex(p->opr.op[0])))
 						value = ex(p->opr.op[1]);
@@ -107,7 +139,9 @@ Object *ex(node_t *p)
 					print_object(value);
 					return value;
 				case ';' :
-					ex(p->opr.op[0]);
+					value = ex(p->opr.op[0]);
+					if (value == RETURN || value == BREAK || value == CONTINUE)
+						return value;
 					return ex(p->opr.op[1]);
 				case '=' :
 					value = ex(p->opr.op[1]);

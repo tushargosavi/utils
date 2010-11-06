@@ -18,8 +18,8 @@ void define_function(char *name, node_t *node);
 %token <intval> INTEGER CHAR
 %token <str> STRING
 %token <str> IDENTIFIER
-%token WHILE IF PRINT FUNCTION TWODOTS FOR FOREACH IN
-%type  <nodep> expr stmt stmt_list arr_access array_def function function_call args for_stmt
+%token WHILE IF PRINT FUNCTION TWODOTS FOR FOREACH IN BREAK CONTINUE RETURN
+%type  <nodep> expr stmt stmt_list arr_access array_def function function_call args for_stmt BREAK CONTINUE
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -47,6 +47,10 @@ function:
 stmt:
 	';'					{ $$ = opr(',', 2, NULL, NULL); }
 	| expr ';'			{ $$ = $1 }
+	| BREAK ';'			{	$$ = opr(BREAK, 0);	}
+	| CONTINUE ';'		{	$$ = opr(CONTINUE, 0);}
+	| RETURN	';'		{ $$ = opr(RETURN, 0); }
+	| RETURN expr ';'	{ $$ = opr(RETURN, 1, $2); }
 	| PRINT expr ';'	{ $$ = opr(PRINT, 1, $2); }
 	| IDENTIFIER '=' expr ';' { $$ = opr('=', 2, id($1), $3); }
 	| IDENTIFIER '[' expr ']' '=' expr ';' { $$ = opr('[', 3, $1, $3, $6); }
