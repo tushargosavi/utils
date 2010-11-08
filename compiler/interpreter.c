@@ -75,6 +75,12 @@ Object *ex(node_t *p)
 						return array_range(ex(p->opr.op[0]), idx, idx2);	
 					}
 					return NULL;
+				case ARRAY_SET :
+					sym = search_symbol(p->opr.op[0]->id.name);
+					value = set_array_element(sym->value,
+								ex(p->opr.op[1]),
+								ex(p->opr.op[2]));
+					return value;
 				case WHILE :
 					while (get_int(ex(p->opr.op[0]))) {
 						value = ex(p->opr.op[1]);

@@ -7,6 +7,7 @@
 #include "object.h"
 
 void define_function(char *name, node_t *node);
+
 %}
 
 %union {
@@ -53,7 +54,7 @@ stmt:
 	| RETURN expr ';'	{ $$ = opr(RETURN, 1, $2); }
 	| PRINT expr ';'	{ $$ = opr(PRINT, 1, $2); }
 	| IDENTIFIER '=' expr ';' { $$ = opr('=', 2, id($1), $3); }
-	| IDENTIFIER '[' expr ']' '=' expr ';' { $$ = opr('[', 3, $1, $3, $6); }
+	| IDENTIFIER '[' expr ']' '=' expr ';' { $$ = opr(ARRAY_SET, 3, id($1), $3, $6); }
 	| IDENTIFIER '=' '[' array_def ']' ';' { $$ = opr('=', 2, id($1), $4); }
 	| WHILE '(' expr ')' stmt { $$ = opr(WHILE, 2, $3, $5); }
 	| FOREACH IDENTIFIER IN IDENTIFIER stmt { $$ = opr(FOREACH, 3, id($2), id($4), $5); }

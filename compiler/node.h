@@ -49,4 +49,8 @@ typedef struct node {
 	};
 } node_t;
 
+enum operations {
+	ARRAY_SET = 100000
+};
+
 #endif

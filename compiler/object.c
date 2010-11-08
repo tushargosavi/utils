@@ -363,3 +363,30 @@ Object *array_range(Object *o, Object *idx1, Object *idx2)
 	return NULL;	
 }
 
+Object *set_array_element(Object *arr, Object *in, Object *value)
+{
+
+	int idx;
+	char *str;
+
+	if (get_type(in) != T_INT)
+		return NULL;
+
+	idx = get_int(in);
+	switch(get_type(arr)) {
+		case T_STRING :
+			if (idx > strlen(get_string(arr))) 
+				fprintf(stderr, "Out of index");
+			str = get_string(arr);
+			str[idx] = get_int(value);
+			break;
+		case T_BYTE_ARRAY :
+			arr->value.barr.data[idx] = get_int(value);
+			break;
+		case T_ARRAY :
+			arr->value.arr.data[idx] = value;
+			break;
+	}
+	return value;
+}
+
