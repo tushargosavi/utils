@@ -13,6 +13,7 @@ Object *cmp_int_gt(Object *a, Object *b);
 Object *cmp_int_lt(Object *a, Object *b);
 Object *cmp_int_eq(Object *a, Object *b);
 Object *cmp_int_ge(Object *a, Object *b);
+Object *cmp_int_ne(Object *a, Object *b);
 Object *append_str(Object *a, Object *b);
 Object *cmp_str_eq(Object *a, Object *b);
 Object *cmp_str_le(Object *a, Object *b);
@@ -34,6 +35,7 @@ struct basic_binary_operation_table {
 	{ "<=", T_INT, T_INT, cmp_int_le },
 	{ ">=", T_INT, T_INT, cmp_int_ge },
 	{ "==", T_INT, T_INT, cmp_int_eq },
+	{ "!=", T_INT, T_INT, cmp_int_ne },
 	{ "<", T_INT, T_INT, cmp_int_lt },
 	{ ">", T_INT, T_INT, cmp_int_gt },
 	{ "+", T_STRING, T_STRING, append_str },
@@ -122,6 +124,12 @@ Object *cmp_int_ge(Object *a, Object *b)
 {
 	return create_int_obj(
 		(get_int(a) >= get_int(b)) ? 1 : 0);
+}
+
+Object *cmp_int_ne(Object *a, Object *b)
+{
+	return create_int_obj(
+		(get_int(a) != get_int(b))? 1 : 0);
 }
 
 Object *append_str(Object *a, Object *b)

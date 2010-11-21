@@ -7,6 +7,7 @@
 #include "object.h"
 
 void define_function(char *name, node_t *node);
+
 %}
 
 %union {
@@ -18,8 +19,8 @@ void define_function(char *name, node_t *node);
 %token <intval> INTEGER CHAR
 %token <str> STRING
 %token <str> IDENTIFIER
-%token WHILE IF PRINT FUNCTION TWODOTS
-%type  <nodep> expr stmt stmt_list arr_access array_def function function_call args
+%token WHILE IF PRINT FUNCTION TWODOTS FOR FOREACH IN BREAK CONTINUE RETURN
+%type  <nodep> expr stmt stmt_list arr_access array_def function function_call args for_stmt BREAK CONTINUE
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -47,14 +48,24 @@ function:
 stmt:
 	';'					{ $$ = opr(',', 2, NULL, NULL); }
 	| expr ';'			{ $$ = $1 }
+	| BREAK ';'			{	$$ = opr(BREAK, 0);	}
+	| CONTINUE ';'		{	$$ = opr(CONTINUE, 0);}
+	| RETURN	';'		{ $$ = opr(RETURN, 0); }
+	| RETURN expr ';'	{ $$ = opr(RETURN, 1, $2); }
 	| PRINT expr ';'	{ $$ = opr(PRINT, 1, $2); }
 	| IDENTIFIER '=' expr ';' { $$ = opr('=', 2, id($1), $3); }
-	| IDENTIFIER '[' expr ']' '=' expr ';' { $$ = opr('[', 3, $1, $3, $6); }
+	| IDENTIFIER '[' expr ']' '=' expr ';' { $$ = opr(ARRAY_SET, 3, id($1), $3, $6); }
 	| IDENTIFIER '=' '[' array_def ']' ';' { $$ = opr('=', 2, id($1), $4); }
 	| WHILE '(' expr ')' stmt { $$ = opr(WHILE, 2, $3, $5); }
+	| FOREACH IDENTIFIER IN IDENTIFIER stmt { $$ = opr(FOREACH, 3, id($2), id($4), $5); }
+	| FOR '(' for_stmt ';' expr ';' for_stmt ')' stmt { $$ = opr(FOR, 4, $3, $5, $7, $9); }
 	| IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); }
 	| IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); }
 	| '{' stmt_list '}' { $$ = $2 }
+	;
+
+for_stmt:
+	| IDENTIFIER '=' expr	{ $$ = opr('=', 2, id($1), $3); }
 	;
 
 stmt_list:
@@ -100,6 +111,7 @@ expr:
 	| expr EQ expr  { $$ = opr(EQ, 2, $1, $3); }
 	| expr LE expr  { $$ = opr(LE, 2, $1, $3); }
 	| expr GE expr  { $$ = opr(GE, 2, $1, $3); }
+	| expr NE expr  { $$ = opr(NE, 2, $1, $3); }
 	| expr '&' expr { $$ = opr('&', 2, $1, $3); }
 	| expr '|' expr { $$ = opr('|', 2, $1, $3); }
 	| expr L_AND expr { $$ = opr(L_AND, 2, $1, $3); }

@@ -62,4 +62,3 @@ Object *minus(Object *a);
 Object *array_access(Object *a, Object *b);
 Object *promote(Object *a);
 #endif
-

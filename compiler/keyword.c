@@ -15,6 +15,13 @@ keyword_ent_t keyword_tbl[] = {
 	{ "else", ELSE },
 	{ "print", PRINT },
 	{ "function", FUNCTION },
+	{ "in" , IN },
+	{ "foreach", FOREACH },
+	{ "for", FOR },
+	{ "break", BREAK },
+	{ "return", RETURN },
+	{ "continue", CONTINUE }
+	
 };
 
 int is_keyword(char *yytext)

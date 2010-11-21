@@ -293,6 +293,20 @@ Object *array_access(Object *o, Object *idx)
 	return NULL;	
 }
 
+int length(Object *o) {
+	switch (get_type(o)) {
+		case T_STRING :
+			return strlen(get_string(o));
+		case T_BYTE_ARRAY :
+			return o->value.barr.len;
+		case T_ARRAY :
+			return o->value.arr.next_idx;
+		default :
+			return 0;
+	}
+}
+
+	
 /* The array access functions */
 Object *array_range(Object *o, Object *idx1, Object *idx2)
 {
@@ -349,3 +363,29 @@ Object *array_range(Object *o, Object *idx1, Object *idx2)
 	return NULL;	
 }
 
+Object *set_array_element(Object *arr, Object *in, Object *value)
+{
+
+	int idx;
+	char *str;
+
+	if (get_type(in) != T_INT)
+		return NULL;
+
+	idx = get_int(in);
+	switch(get_type(arr)) {
+		case T_STRING :
+			if (idx > strlen(get_string(arr))) 
+				fprintf(stderr, "Out of index");
+			str = get_string(arr);
+			str[idx] = get_int(value);
+			break;
+		case T_BYTE_ARRAY :
+			arr->value.barr.data[idx] = get_int(value);
+			break;
+		case T_ARRAY :
+			arr->value.arr.data[idx] = value;
+			break;
+	}
+	return value;
+}

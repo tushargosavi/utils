@@ -1,6 +1,6 @@
 OBJECTS=parser.o main.o keyword.o lexer.o node.o interpreter.o base_opr.o object.o 
 
-GRAPH_OBJS=parser.o keyword.o lexer.o node.o show_graph.o main.o
+GRAPH_OBJS=parser.o keyword.o lexer.o node.o show_graph.o main.o object.o
 
 
 CFLAGS=-g3
@@ -42,5 +42,5 @@ objtest : object.o base_opr.o objtest.o
 
 clean :
 	rm -f *.o
-	rm -f test.exe in.exe
+	rm -f test.exe in.exe graph
 	rm -f parser.c parser.h lexer.c lex.yy.c
