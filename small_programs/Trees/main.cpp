@@ -1,5 +1,7 @@
 #include <iostream>
-
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 #include <mytree.h>
 #include <bst.h>
 #include <avl.h>
@@ -30,20 +32,20 @@ void clear_cmd();
 int check_tree();
 
 struct command commands[] = {
-	{ "create", "Create a tree", create_cmd },
-        { "rand", "Add random nodes to the tree", add_random_cmd },
-        { "add", "Add node to the tree", add_node_cmd },
-        { "addn", "Add node to the tree", addn_node_cmd },
-        { "del", "Remove a node from tree", del_node_cmd },
-        { "display", "Display tree using gv", display_node_cmd },
-        { "height", "Display height of the tree ", display_height_cmd },
-        { "count", "Display Number of element of tree ", display_count_cmd },
-        { "search", "search a key ", search_cmd },
-	{ "help", "Show this message", help_cmd },
-	{ "max", "set max value in random addition", setmax_cmd },
-        { "quit", "Quit", quit_cmd },
-	{ "clear", "Clear tree", clear_cmd },
-        { NULL }
+		{ "create", "Create a tree", create_cmd },
+		{ "rand", "Add random nodes to the tree", add_random_cmd },
+		{ "add", "Add node to the tree", add_node_cmd },
+		{ "addn", "Add node to the tree", addn_node_cmd },
+		{ "del", "Remove a node from tree", del_node_cmd },
+		{ "display", "Display tree using gv", display_node_cmd },
+		{ "height", "Display height of the tree ", display_height_cmd },
+		{ "count", "Display Number of element of tree ", display_count_cmd },
+		{ "search", "search a key ", search_cmd },
+		{ "help", "Show this message", help_cmd },
+		{ "max", "set max value in random addition", setmax_cmd },
+		{ "quit", "Quit", quit_cmd },
+		{ "clear", "Clear tree", clear_cmd },
+		{ NULL }
 };
 
 
