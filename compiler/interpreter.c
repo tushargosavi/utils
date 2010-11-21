@@ -166,7 +166,9 @@ struct symbol_table *search_symbol(char *name)
 
 Object *call_function(node_t *code, node_t *arg)
 {
+	Object *value;
 	add_symbol("arg", arg);
-	return ex(code);
+	value  = ex(code);
+	return value;
 }
 
