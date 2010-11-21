@@ -1,0 +1,47 @@
+#
+# Copyright (c) 1999 by Sun Microsystems, Inc.
+# All rights reserved.
+#
+#ident	"@(#)Makefile.common	1.1	99/11/19 SMI"
+
+MODULES = mdb_dd.so
+
+CFLAGS += -v -xstrconst -K pic -I. -I../common/
+CPPFLAGS += -D_KERNEL
+LDFLAGS += -Wl,-z,text
+
+OBJECTS=mdb_db.o stab_db.o stab_parser.o struct_print.o struct_info.o view.o $(READ_OBJECT)
+LINTFILES = $(MODULES:%.so=%.ln)
+
+all: $(MODULES)
+
+.KEEP_STATE:
+
+.NO_PARALLEL:
+.PARALLEL: $(OBJECTS) $(LINTFILES)
+
+mdb_dd.so: $(OBJECTS)
+	$(CC) $(CFLAGS) -G -o $@ $(OBJECTS) $< $(LDFLAGS) $(LIBS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+%.o: ../common/%.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+clean:
+	rm -f $(OBJECTS)
+
+clean.lint:
+	rm -f $(LINTFILES)
+
+clobber: clean clean.lint
+	rm -f $(MODULES)
+
+%.ln: %.c
+	$(LINT) $(LINTFLAGS) $(CPPFLAGS) -c $<
+
+%.ln: ../common/%.c
+	$(LINT) $(LINTFLAGS) $(CPPFLAGS) -c $<
+
+lint: $(LINTFILES)
