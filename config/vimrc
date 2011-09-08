@@ -1,0 +1,65 @@
+syn enable
+set gfn=Monospace\ 11
+set ts=4
+set sw=4
+set hlsearch
+set incsearch
+set showmatch
+set magic
+set laststatus=2
+set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set colorcolumn=81
+colorscheme desert
+:filetype plugin on
+
+" For correct indentation
+set expandtab
+set shiftwidth=2
+set softtabstop=2
+
+" Help moving through multiple split windows                                     
+nmap <silent> <A-Up> :wincmd k<CR>                                               
+nmap <silent> <A-Down> :wincmd j<CR>                                             
+nmap <silent> <A-Left> :wincmd h<CR>                                             
+nmap <silent> <A-Right> :wincmd l<CR>    
+
+" Buf explorer settings
+let g:bufExplorerDefaultHelp=0
+let g:bufExplorerShowRelativePath=1
+map <leader>o :BufExplorer<cr>
+
+" Taken from advance cscope file
+" http://cscope.sourceforge.net/cscope_maps.vim
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
+nmap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
+
+comm! -nargs=1 S :cs find s
+comm! -nargs=1 C :cs find c
+comm! -nargs=1 T :cs find t
+comm! -nargs=1 E :cs find e
+comm! -nargs=1 F :cs find f
+comm! -nargs=1 G :cs find g
+comm! -nargs=1 L :cs load
+comm! -nargs=0 D :cs show
+comm! -nargs=0 K :cs kill 0
+comm! -nargs=0 A :cs add cscope.out
+comm! -nargs=0 R call CScope_Refresh()
+
+" Toggle Taglist window
+let Tlist_CTags='/usr/bin/ctags'
+nnoremap <silent> <F8> :TlistToggle<CR>
+
+" open file containing tag in new split window.
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+
+" Highlight current line
+" hi CursorLine   cterm=NONE ctermbg=darkgray ctermfg=white guibg=darkgrey guifg=white
+hi CursorLine term=underline cterm=underline guibg=Grey40
+set cursorline
