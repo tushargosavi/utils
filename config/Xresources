@@ -1,0 +1,13 @@
+URxvt.font: xft:Monospace:size=9
+URxvt.depth: 32
+URxvt.background: Black
+URxvt.foreground: White
+URxvt.perl-ext-common:  default,matcher
+URxvt.urlLauncher:      /usr/bin/firefox
+URxvt.matcher.button:   1
+URxvt.perl-ext:      default,url-select
+URxvt.keysym.M-u:    perl:url-select:select_next
+URxvt.urlLauncher:   firefox
+URxvt.underlineURLs: true
+URxvt.perl-ext-common:  default,tabbed
+URxvt.geometry: 95x55
