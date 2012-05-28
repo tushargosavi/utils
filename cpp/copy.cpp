@@ -1,63 +1,60 @@
 #include <iostream>
+#include <vector>
+#include <list>
+#include <algorithm>
+#include <sequtils.h>
 
 using namespace std;
 
 class Test {
-protected :
-  int i;
-
+private :
+  int value;
 public :
-  /* default constructore */
-  Test() {
-    cout << "Inside default constructor 0x" << std::hex << this << std::dec << endl;
+  Test(int v) : value(v) { cout << "calling constructor with " << v << endl; }
+  ~Test() { cout << "destroying " << value << endl; }
+
+  Test(const Test& t) {
+    cout << "calling copy constructor obj " << this << " from " <<  &t << endl;
+    if (this != &t) {
+      value = t.value;
+    }
   }
 
-  /* copy constructor */
-  Test(Test &t) {
-    cout << "Inside copy constructor " << std::hex << this << " from " << &t << std::dec << endl;
-    this->i = t.i;
-  }
-
-  ~Test() {
-    cout << "Inside destructor " << std::hex << this << std::dec << endl;
-  }
-
-  void set(int i) { this->i = i; }
-  int get() { return i; }
-  int incr() { return i++; }
-
-  void dump() {
-    cout << std::hex << this << std::dec << " value of i " << i << endl;
-  }
-
-  Test operator =(Test &t)
+  Test& operator=(const Test& t)
   {
-    cout << "= operator called " << std::hex << this << " from " << &t << std::dec << endl;
-    return t;
+    if (this != &t) {
+      value = t.value;
+    }
+    return *this;
   }
+      
+  int getValue() const { return value; }
+  void set(int v) { value = v; };
 };
 
-void check(const Test &t)
+ostream& operator<<(ostream& os, const Test& t)
 {
-  cout << "pass by referecne " << endl;
+  os << "[ref " << &t << " value " << t.getValue() << "] " << endl;
+  return os;
 }
 
-Test checkRet(Test t)
+int main(int argc, char *argv[])
 {
-  Test toRet;
-  toRet = t;
-  toRet.set(10);
-  return toRet;
-}
+  list<Test> a;
+  list<Test> b;
+  Test v(0);
 
-int main(int argc, char **argv)
-{
-  Test t;
-  Test t1;
-  t.set(10);
-  t1 = checkRet(t);
-  t.dump();
-  t1.dump();
+  for(int i = 0; i < 10; ++i) {
+    v.set(i);
+    a.push_back(v);
+  }
+
+  cout << endl;
+  cout << "before copying " << endl;
+  b = a;
+  
+  print_seq(a);
+  print_seq(b);
+
   return 0;
 }
-
