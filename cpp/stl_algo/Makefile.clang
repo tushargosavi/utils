@@ -1,0 +1,10 @@
+TARGETS=foreach
+
+CXX=/usr/local/bin/clang++
+CPPFLAGS=-g -I. -I.. -std=c++0x
+
+all : ${TARGETS}
+
+clean :
+	rm -f $(TARGETS)
+
