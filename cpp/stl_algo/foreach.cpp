@@ -22,6 +22,11 @@ public :
   }
 };
 
+void print(int a)
+{
+  std::cout << a << " ";
+}
+
 int main(int argc, char *argv[])
 {
   vector<int> v1;
@@ -41,8 +46,20 @@ int main(int argc, char *argv[])
   cout << "Min Element " << *min_element(v2.begin(), v2.end()) << std::endl;
   
   /* with reverse */
-  cout << "Max Element " << *max_element(v2.begin(), v2.end(), less<int>) << std::endl;
-  cout << "Min Element " << *min_element(v2.begin(), v2.end(), less<int>) << std::endl;
+  cout << "Max Element " << *max_element(v2.begin(), v2.end(), less<int>()) << std::endl;
+  cout << "Min Element " << *min_element(v2.begin(), v2.end(), less<int>()) << std::endl;
 
+  list<int> v3;
+  populate_rand(v3, 10, 100);
+  print_seq(v3);
+  cout << "printing with for_each " << endl;
+  for_each(v3.begin(), v3.end(),
+	   print);
+  cout << endl;
+
+  transform(v3.begin(), v3.end(),
+	    v3.begin(),
+	    bind2nd(plus<int>(), 10));
+  print_seq(v3);
   return 0;
 }

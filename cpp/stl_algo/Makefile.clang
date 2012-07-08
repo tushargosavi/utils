@@ -1,4 +1,4 @@
-TARGETS=foreach
+TARGETS=foreach swap
 
 CXX=/usr/local/bin/clang++
 CPPFLAGS=-g -I. -I.. -std=c++0x
