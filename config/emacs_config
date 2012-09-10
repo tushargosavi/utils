@@ -1,27 +1,22 @@
 ;; configuration for CEDET
-(load-file "/home/tugosavi/emacs/cedet-1.0/common/cedet.el")
-(global-ede-mode t)                      ; Enable the Project management system
-(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
-(semantic-load-enable-minimum-features)
-(global-srecode-minor-mode 1)            ; Enable template insertion menu
+;;(load-file "~/emacs/cedet-1.0/common/cedet.el")
+;;(global-ede-mode t)                      ; Enable the Project management system
+;;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
+;;(semantic-load-enable-minimum-features)
+;;(global-srecode-minor-mode 1)            ; Enable template insertion menu
 
-(add-to-list 'load-path "/home/tugosavi/emacs/ecb-2.40")
-(load-file "/home/tugosavi/emacs/ecb-2.40/ecb.el")
+;;(add-to-list 'load-path "~/emacs/ecb-2.40")
+;;(load-file "~/emacs/ecb-2.40/ecb.el")
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(LaTeX-command "pdflatex")
  '(ecb-options-version "2.40")
  '(ecb-source-path (quote (("/home/tugosavi/Work/source/latest" "latest"))))
  '(show-paren-mode t))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "gray12" :foreground "green" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "Liberation Mono")))))
 
 ;; configuration for fsharp
 ;;
@@ -32,24 +27,28 @@
 (setq inferior-fsharp-program "mono /home/tugosavi/Downloads/f_sharp/FSharp-2.0.0.0/bin/fsi.exe --readline-")
 (setq fsharp-compiler "mono /home/tugosavi/Downloads/f_sharp/FSharp-2.0.0.0/bin/fsc.exe ")
 
+;; configuration for flymake
+(require 'flymake)
+
 ;; configuration for haskell
 (load "~/emacs/haskell-mode/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(setq haskell-program-name "/usr/bin/ghci")
+(setq haskell-program-name "/usr/local/bin/ghci")
+;;(add-to-list 'load-path "~/.cabal/share/ghc-mod-1.10.15/")
+;;(add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode)))
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 ;; configuration of list
 ;; Set up the Common Lisp environment
-(add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
-(setq inferior-lisp-program "/usr/bin/sbcl")
-(require 'slime)
-(slime-setup)
+;;(add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
+;;(setq inferior-lisp-program "/usr/bin/sbcl")
+;;(require 'slime)
+;;(slime-setup)
 
 ;; changing default frame size
-(add-to-list 'default-frame-alist '(left . 0))
-(add-to-list 'default-frame-alist '(top . 0))
-(add-to-list 'default-frame-alist '(height . 50))
-(add-to-list 'default-frame-alist '(width . 120))
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width . 87))
 
 ;; emacs music player
 ;;(add-to-list 'load-path "~/elisp/emms/")
@@ -69,20 +68,25 @@
 ;;
 
 ;; Emacs themes
-(add-to-list 'load-path "~/emacs/color-theme/")
-(require 'color-theme)
-(color-theme-initialize)
-(color-theme-calm-forest)
+;;(add-to-list 'load-path "~/emacs/color-theme/")
+;;(require 'color-theme)
+;;(color-theme-initialize)
+;;(color-theme-calm-forest)
 
 ;; load RFC viewer and downloader
-(load-file "/home/tugosavi/emacs/rfcview.el")
-(load-file "/home/tugosavi/emacs/get-rfc.el")
+(load-file "~/emacs/rfcview.el")
+(load-file "~/emacs/get-rfc.el")
 
 
-(add-to-list 'load-path "/home/tugosavi/emacs")
+(add-to-list 'load-path "~/emacs")
 (require 'irfc)
-(setq irfc-directory "/home/tugosavi/notes/rfc")
+(setq irfc-directory "~/notes/rfc")
 (setq irfc-assoc-mode t)
+
+(require 'fill-column-indicator)
+(setq fci-rule-width 1)
+(setq fci-rule-color "darkblue")
+(add-hook 'c-mode-hook 'fci-mode)
 
 (put 'upcase-region 'disabled nil)
 
@@ -128,3 +132,82 @@
 
 ; Use fundamental mode when editing plantuml blocks with C-c '
 (add-to-list 'org-src-lang-modes (quote ("plantuml" . fundamental)))
+
+(add-to-list 'load-path "~/emacs/magit")
+(require 'magit)
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+      backup-by-copying t    ; Don't delink hardlinks
+      version-control t      ; Use version numbers on backups
+      delete-old-versions t  ; Automatically delete excess backups
+      kept-new-versions 20   ; how many of the newest versions to keep
+      kept-old-versions 5    ; and how many of the old
+      )
+
+(add-to-list 'load-path "~/emacs/zencoding")
+(require 'zencoding-mode)
+(add-hook 'sgml-mode-hook 'zencoding-mode)
+
+;(setq c-basic-indent 2)
+;(highlight-trailing-whitespace)
+
+; dirtree mode
+(require 'tree-mode)
+(require 'windata)
+(require 'dirtree)
+(autoload 'dirtree "dirtree" "Add directory to tree view" t)
+(global-set-key "\C-o" 'dirtree-show)
+
+; set 2 space indenting for python code and convert tab to spaces.
+(add-hook 'python-mode-hook
+	  (function (lambda ()
+		      (setq '(indent-tabs-mode nil)
+			    '(tab-width 2)
+			    '(python-indent 2)))))
+
+; configure yasnippet
+(add-to-list 'load-path "~/emacs/yasnippet")
+(require 'yasnippet)
+(yas/global-mode 1)
+
+; suggested by quicklisp
+;(load (expand-file-name "~/quicklisp/slime-helper.el"))
+;(setq inferior-lisp-program "sbcl")
+
+(put 'downcase-region 'disabled nil)
+
+(setq tab-always-indent 'complete)
+(add-to-list 'completion-styles 'initials t)
+
+(add-to-list 'load-path "~/emacs/clojure-mode/")
+(require 'clojure-mode)
+(require 'nrepl)
+
+;; auto complete mode
+;;(add-to-list 'load-path "~/emacs/auto-complete")
+;;(require 'auto-complete-config)
+;;(ac-config-default)
+;;
+
+
+(add-to-list 'load-path "~/emacs/auto-complete")
+;;Load the default configuration
+(require 'auto-complete-config)
+;; Make sure we can find the dictionaries
+(add-to-list 'ac-dictionary-directories "~/emacs/auto-complete/dict")
+;; Use dictionaries by default
+(setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
+(global-auto-complete-mode t)
+;; Start auto-completion after 2 characters of a word
+(setq ac-auto-start 2)
+;; case sensitivity is important when finding matches
+(setq ac-ignore-case nil)
+
+(add-to-list 'load-path "~/emacs/emacs-nav-49")
+(require 'nav)
+(nav-disable-overeager-window-splitting)
+(global-set-key [f8] 'nav-toggle)
+
+(add-to-list 'load-path "~/emacs/emacs-dirtree")
+(require 'dirtree)
+
